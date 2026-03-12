@@ -1,0 +1,316 @@
+@import "tailwindcss";
+
+/* ─── Theme Custom Variants ──────────────────────────────── */
+@custom-variant retro (&:where(.theme-retro, .theme-retro *));
+@custom-variant carnival (&:where(.theme-carnival, .theme-carnival *));
+
+/* ─── Retro Risograph ────────────────────────────────────── */
+.theme-retro {
+  --bg-page:      #FFF8E7;
+  --bg-card:      #FFFFFF;
+  --bg-surface:   #FFF1CC;
+  --text-primary: #1A1A1A;
+  --text-secondary:#2B2B2B;
+  --text-muted:   #7A6840;
+  --accent:       #FF2EB8;
+  --accent-hover: #E01AA0;
+  --accent-alt:   #00E5FF;
+  --accent-gold:  #FFCC00;
+  --border:       #1A1A1A;
+  --border-light: rgba(26,26,26,0.12);
+  --shadow:       #1A1A1A;
+  --card-shadow:  5px 5px 0px #1A1A1A;
+  --card-shadow-sm: 3px 3px 0px #1A1A1A;
+  --hint-bg:      #FF2EB8;
+  --hint-text:    #FFF8E7;
+  --correct-bg:   #FFCC00;
+  --correct-text: #1A1A1A;
+  --timer-high:   #00E5FF;
+  --timer-mid:    #FFCC00;
+  --timer-low:    #FF2EB8;
+  --conf-1: #FF2EB8;
+  --conf-2: #00E5FF;
+  --conf-3: #FFCC00;
+  --conf-4: #FF6B35;
+  --conf-5: #A855F7;
+  --grain-opacity:0.04;
+}
+
+/* ─── Midnight Carnival ──────────────────────────────────── */
+.theme-carnival {
+  --bg-page:      #0D1F1A;
+  --bg-card:      #1A2E28;
+  --bg-surface:   #122A23;
+  --text-primary: #F0EAD6;
+  --text-secondary:#A8DADC;
+  --text-muted:   #6FA098;
+  --accent:       #E63946;
+  --accent-hover: #C8303C;
+  --accent-alt:   #457B9D;
+  --accent-gold:  #E9C46A;
+  --border:       #A8DADC;
+  --border-light: rgba(168,218,220,0.12);
+  --shadow:       #060F0C;
+  --card-shadow:  5px 5px 0px #060F0C;
+  --card-shadow-sm: 3px 3px 0px #060F0C;
+  --hint-bg:      #E63946;
+  --hint-text:    #F0EAD6;
+  --correct-bg:   #E9C46A;
+  --correct-text: #0D1F1A;
+  --timer-high:   #457B9D;
+  --timer-mid:    #E9C46A;
+  --timer-low:    #E63946;
+  --conf-1: #E63946;
+  --conf-2: #E9C46A;
+  --conf-3: #A8DADC;
+  --conf-4: #FF5F6D;
+  --conf-5: #457B9D;
+  --grain-opacity: 0;
+}
+
+/* ─── Base ───────────────────────────────────────────────── */
+@layer base {
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    transition: background-color 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+  }
+}
+
+/* Smooth theme transitions for all themed elements */
+.card, .card-sm, .surface, .surface-border,
+.btn, .btn-primary, .btn-secondary, .btn-ghost,
+.input-field, .chip, .chip-alt, .label,
+.grain-overlay, header {
+  transition: background-color 0.4s ease, color 0.4s ease,
+              border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* ─── Component Utilities ────────────────────────────────── */
+@layer components {
+  .card {
+    background: var(--bg-card);
+    border: 3px solid var(--border);
+    box-shadow: var(--card-shadow);
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+
+  .card-sm {
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    box-shadow: var(--card-shadow-sm);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  .surface {
+    background: var(--bg-surface);
+    border: 2px solid var(--border-light);
+    border-radius: 10px;
+  }
+
+  .surface-border {
+    background: var(--bg-surface);
+    border: 2px dashed var(--border-light);
+    border-radius: 10px;
+  }
+
+  .btn {
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.75rem 1.75rem;
+    transition: opacity 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 2px solid var(--border);
+    box-shadow: var(--card-shadow-sm);
+  }
+
+  .btn:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--card-shadow-sm);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg-page);
+  }
+
+  .btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    color: var(--accent);
+    transform: none;
+  }
+
+  .input-field {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .input-field:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+
+  .input-field::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
+    font-weight: 500;
+  }
+
+  .label {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .chip {
+    background: var(--accent);
+    color: var(--bg-page);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    border: 1.5px solid var(--border);
+  }
+
+  .chip-alt {
+    background: var(--accent-alt);
+    color: var(--bg-page);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    border: 1.5px solid var(--border);
+  }
+
+  /* Paper grain — only visible in retro theme */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: var(--grain-opacity, 0);
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px;
+    background-repeat: repeat;
+  }
+}
+
+/* ─── Keyframe Animations ─────────────────────────────────── */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.7); opacity: 0; }
+  55%  { transform: scale(1.08); }
+  80%  { transform: scale(0.96); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.8) rotate(-3deg); opacity: 0; }
+  60%  { transform: scale(1.1) rotate(1deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg);  opacity: 1; }
+}
+
+@keyframes hintReveal {
+  0%   { transform: scale(0.8); opacity: 0; filter: blur(4px); }
+  60%  { transform: scale(1.15); opacity: 1; filter: blur(0); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes stamp {
+  0%   { transform: scale(3.5) rotate(-12deg); opacity: 0; }
+  40%  { transform: scale(0.88) rotate(-12deg); opacity: 1; }
+  55%  { transform: scale(1.05) rotate(-12deg); }
+  100% { transform: scale(1) rotate(-12deg); opacity: 1; }
+}
+
+@keyframes floatUp {
+  0%   { transform: translate(0, 0) rotate(var(--rot-s, 0deg)); }
+  100% { transform: translate(var(--drift, 0px), -110vh) rotate(var(--rot-e, 30deg)); }
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(var(--rot-end, 360deg)); opacity: 0; }
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  15%       { transform: translate(-3px, 1px) rotate(-0.4deg); }
+  30%       { transform: translate(3px, -1px) rotate(0.4deg); }
+  45%       { transform: translate(-2px, 1px) rotate(-0.2deg); }
+  60%       { transform: translate(2px, -1px) rotate(0.2deg); }
+  75%       { transform: translate(-1px, 0) rotate(0); }
+  90%       { transform: translate(1px, 0) rotate(0); }
+}
+
+@keyframes tickPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.06); }
+}
+
+@keyframes sparkle {
+  0%   { transform: scale(0) rotate(0deg); opacity: 1; }
+  50%  { transform: scale(1.4) rotate(180deg); opacity: 0.8; }
+  100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
