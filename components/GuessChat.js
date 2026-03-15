@@ -70,38 +70,33 @@ export default function GuessChat({ guesses, onGuess, disabled, playerName, corr
           </p>
         )}
         {guesses.map((g, i) => {
-          const isCorrect = correctSet.has(g.name);
+          const isMe = g.name === playerName;
+          if (g.isCorrect) {
+            return (
+              <div
+                key={i}
+                className="my-3 text-center animate-[bounceIn_0.3s_ease-out]"
+              >
+                <span
+                  className="inline-block px-4 py-2 rounded-full font-bold text-sm shadow-sm"
+                  style={{
+                    backgroundColor: 'var(--correct-bg)',
+                    color: 'var(--correct-text)',
+                    border: '2px solid rgba(0,0,0,0.1)'
+                  }}
+                >
+                  ✅ {g.name} cracked the mission!
+                </span>
+              </div>
+            );
+          }
           return (
             <div
               key={i}
-              className="card-sm animate-[slideIn_0.2s_ease-out]"
-              style={
-                isCorrect
-                  ? {
-                      background: "var(--correct-bg)",
-                      borderColor: "var(--border)",
-                    }
-                  : undefined
-              }
+              className={`flex flex-col max-w-[85%] animate-[slideIn_0.2s_ease-out] ${
+                isMe ? "self-end items-end" : "self-start items-start"
+              }`}
             >
-              <div className="flex items-start gap-1.5 flex-wrap">
-                {isCorrect && (
-                  <>
-                    <span
-                      className="text-xs font-extrabold animate-[sparkle_0.6s_ease-out]"
-                      style={{ color: "var(--correct-text)" }}
-                    >
-                      {"\u2714"}
-                    </span>
-                    <span
-                      className="chip"
-                      style={{ background: "var(--correct-bg)", color: "var(--correct-text)" }}
-                    >
-                      Correct!
-                    </span>
-                  </>
-                )}
-              </div>
               <div>
                 <span
                   className="font-bold"
@@ -110,9 +105,7 @@ export default function GuessChat({ guesses, onGuess, disabled, playerName, corr
                   {g.name}:{" "}
                 </span>
                 <span
-                  style={{
-                    color: isCorrect ? "var(--correct-text)" : "var(--text-primary)",
-                  }}
+                  style={{ color: "var(--text-primary)" }}
                 >
                   {g.text}
                 </span>

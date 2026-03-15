@@ -49,15 +49,16 @@ export default function RoomPage() {
     }
   }, [room.phase]);
 
-  // Host starts guessing timer
+  // Host starts the timer when entering planner phase
   useEffect(() => {
-    if (room.phase === "guessing" && room.isHost && !timerStartedRef.current) {
+    if (room.phase === "planner" && room.isHost && !timerStartedRef.current) {
       timerStartedRef.current = true;
       room.startTimer();
     }
   }, [room.phase, room.isHost]);
 
   // Host transitions to voting when guessing timer ends
+  // Note: transition from planner to guessing is handled inside useRoom.js interval
   useEffect(() => {
     if (room.phase === "guessing" && room.timeLeft <= 0 && room.isHost && !votingStartedRef.current) {
       votingStartedRef.current = true;
@@ -249,6 +250,17 @@ export default function RoomPage() {
             emojiLimit={room.settings.emojiLimit}
             onSubmit={room.submitEmojiPlan}
           />
+          <div className="mt-8 max-w-sm mx-auto">
+            <Timer
+              duration={room.settings.roundTime}
+              hintTime={0}
+              hint={""}
+              onHintReveal={() => {}}
+              onTimeUp={() => {}}
+              syncedTimeLeft={room.timeLeft}
+              hintRevealed={false}
+            />
+          </div>
         </div>
       );
     }
@@ -262,14 +274,20 @@ export default function RoomPage() {
         </p>
         {insideManBanner}
         <div className="text-6xl animate-pulse">{"\u{1F575}\u{FE0F}"}</div>
-        <div className="card text-center max-w-md">
-          <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+        <div className="card text-center max-w-md w-full">
+          <p className="text-lg font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
             <span style={{ color: 'var(--accent)' }}>{plannerPlayer?.name || "Planner"}</span>{" "}
             is preparing the plan...
           </p>
-          <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>
-            Get ready to guess!
-          </p>
+          <Timer
+            duration={room.settings.roundTime}
+            hintTime={0}
+            hint={""}
+            onHintReveal={() => {}}
+            onTimeUp={() => {}}
+            syncedTimeLeft={room.timeLeft}
+            hintRevealed={false}
+          />
         </div>
       </div>
     );

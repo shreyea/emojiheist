@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const EMOJI_LIMIT_OPTIONS = [4, 6, 8, 10, 99];
-const ROUND_TIME_OPTIONS = [45, 60];
+const ROUND_TIME_OPTIONS = [45, 60, 120];
 const TOTAL_ROUNDS_OPTIONS = [5, 10];
 
 export default function Lobby({ roomId, players, spectators, isHost, settings, onStart, onSettingsChange }) {
