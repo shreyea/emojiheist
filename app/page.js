@@ -45,17 +45,22 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] gap-8 text-center">
-      <div className="animate-[bounceIn_0.5s_ease-out]">
-        <p className="text-7xl md:text-8xl mb-4">&#128142;</p>
-        <h2 className="text-4xl md:text-5xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
-          <span style={{ color: 'var(--accent)' }}>Emoji</span> Heist
-        </h2>
-        <p className="mt-3 text-lg max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
-          Explain the mission using emojis. Can your friends guess it?
-        </p>
-        <p className="mt-1 text-sm max-w-sm mx-auto" style={{ color: 'var(--text-muted)' }}>
-          One player secretly sabotages the team. Play with 4&#8211;8 players.
-        </p>
+      <div className="cinematic-hero relative w-full overflow-visible">
+        <div className="hero-deck">
+          <p className="hero-logo text-7xl md:text-8xl mb-4">&#128142;</p>
+
+          <h2 className="hero-title text-4xl md:text-5xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
+            <span className="hero-accent" style={{ color: 'var(--accent)' }}>Emoji</span> Heist
+          </h2>
+
+          <p className="hero-tagline mt-3 text-lg max-w-md mx-auto" style={{ color: 'var(--text-secondary)' }}>
+            Explain the mission using emojis. Can your friends guess it?
+          </p>
+
+          <p className="hero-sub mt-1 text-sm max-w-sm mx-auto" style={{ color: 'var(--text-muted)' }}>
+            One player secretly sabotages the team. Play with 4&#8211;8 players.
+          </p>
+        </div>
       </div>
 
       {!mode && (

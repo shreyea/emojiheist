@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 /* ─── Theme Custom Variants ──────────────────────────────── */
 @custom-variant retro (&:where(.theme-retro, .theme-retro *));
@@ -35,10 +34,6 @@
   --conf-4: #FF6B35;
   --conf-5: #A855F7;
   --grain-opacity:0.04;
-  --bg-glow-1: rgba(255,46,184,0.08);
-  --bg-glow-2: rgba(0,229,255,0.06);
-  --bg-glow-3: rgba(255,204,0,0.06);
-  --grid-color: rgba(26,26,26,0.03);
 }
 
 /* ─── Midnight Carnival ──────────────────────────────────── */
@@ -71,10 +66,6 @@
   --conf-4: #FF5F6D;
   --conf-5: #457B9D;
   --grain-opacity: 0;
-  --bg-glow-1: rgba(230,57,70,0.08);
-  --bg-glow-2: rgba(69,123,157,0.07);
-  --bg-glow-3: rgba(233,196,106,0.05);
-  --grid-color: rgba(168,218,220,0.04);
 }
 
 /* ─── Base ───────────────────────────────────────────────── */
@@ -82,7 +73,7 @@
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     background: var(--bg-page);
     color: var(--text-primary);
     transition: background-color 0.4s ease, color 0.4s ease;
@@ -236,6 +227,13 @@
     border: 1.5px solid var(--border);
   }
 
+  /* Subtle dot grid background texture */
+  .bg-dot-grid {
+    background-image: radial-gradient(circle, var(--border-light) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.5;
+  }
+
   /* Paper grain — only visible in retro theme */
   .grain-overlay {
     position: fixed;
@@ -287,16 +285,50 @@
   100% { transform: scale(1) rotate(-12deg); opacity: 1; }
 }
 
-@keyframes floatUp {
-  0%   { transform: translate(0, 0) rotate(var(--rot-s, 0deg)); }
-  100% { transform: translate(var(--drift, 0px), -110vh) rotate(var(--rot-e, 30deg)); }
-}
-
 @keyframes confettiFall {
   0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
   85%  { opacity: 1; }
   100% { transform: translateY(100vh) rotate(var(--rot-end, 360deg)); opacity: 0; }
 }
+
+/* Slow dreamy float for background emoji silhouettes */
+@keyframes gentleFloat {
+  0%   { transform: rotate(var(--rot, 0deg)) translate(  0px,   0px); }
+  20%  { transform: rotate(var(--rot, 0deg)) translate(  8px, -14px); }
+  40%  { transform: rotate(var(--rot, 0deg)) translate( -4px, -24px); }
+  60%  { transform: rotate(var(--rot, 0deg)) translate(-10px, -14px); }
+  80%  { transform: rotate(var(--rot, 0deg)) translate(  4px,  -6px); }
+  100% { transform: rotate(var(--rot, 0deg)) translate(  0px,   0px); }
+}
+
+/* Background floater base styles */
+.bg-floater {
+  opacity: var(--op, 0.05);
+  transition: opacity 220ms linear, transform 220ms linear;
+  filter: grayscale(1) contrast(0.9);
+  /* ensure background icons don't create unreadable overlays */
+  mix-blend-mode: multiply;
+  transform-origin: center;
+}
+
+/* Light theme: increase visibility slightly and use multiply to create subtle silhouette */
+.theme-retro .bg-floater {
+  opacity: calc(var(--op, 0.05) * 1.6);
+  mix-blend-mode: multiply;
+}
+
+/* Dark theme: keep low, but raise contrast a bit */
+.theme-carnival .bg-floater {
+  opacity: calc(var(--op, 0.05) * 1.0);
+  mix-blend-mode: screen;
+}
+
+/* Slow upward drift so elements slowly rise like bubbles */
+@keyframes bubbleDrift {
+  0%   { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  100% { transform: translateY(-110vh) rotate(var(--rot, 0deg)); }
+}
+
 
 @keyframes screenShake {
   0%, 100% { transform: translate(0, 0) rotate(0); }
@@ -319,18 +351,81 @@
   100% { transform: scale(0) rotate(360deg); opacity: 0; }
 }
 
+/* Cinematic hero animations */
+.cinematic-hero {
+  position: relative;
+  overflow: visible;
+  perspective: 900px;
+  padding-top: 8px;
+}
+
+.cinematic-hero::before {
+  /* subtle moving spotlight behind hero */
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 62%;
+  height: 60%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: radial-gradient(60% 40% at 50% 15%, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 45%);
+  opacity: 0.06;
+  filter: blur(20px);
+  mix-blend-mode: overlay;
+  animation: slowDrift 18s linear infinite;
+}
+
+.hero-deck > * {
+  animation: cinematicEnter 900ms cubic-bezier(.2,.9,.2,1) both;
+}
+.hero-deck > *:nth-child(1) { animation-delay: 0.05s; }
+.hero-deck > *:nth-child(2) { animation-delay: 0.18s; }
+.hero-deck > *:nth-child(3) { animation-delay: 0.34s; }
+.hero-deck > *:nth-child(4) { animation-delay: 0.46s; }
+
+.hero-logo {
+  transform-origin: center;
+  animation: logoRise 1400ms cubic-bezier(.16,.9,.2,1) both, logoFloat 6s ease-in-out infinite;
+}
+
+@keyframes cinematicEnter {
+  0% { opacity: 0; transform: translateY(18px) scale(0.995); }
+  65% { opacity: 1; transform: translateY(-6px) scale(1.006); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes logoRise {
+  0% { opacity: 0; transform: translateY(20px) scale(0.92); filter: blur(6px); }
+  70% { opacity: 1; transform: translateY(-8px) scale(1.02); filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes logoFloat {
+  0% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  50% { transform: translateY(-6px) rotate(calc(var(--rot, 0deg) * 0.8)); }
+  100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+}
+
+.hero-title { overflow: visible; }
+.hero-accent {
+  display: inline-block;
+  position: relative;
+  animation: accentGlow 3.8s ease-in-out infinite;
+}
+
+@keyframes accentGlow {
+  0%,100% { text-shadow: 0 0 0 transparent; }
+  50% { text-shadow: 0 12px 36px color-mix(in srgb, var(--accent) 28%, transparent); }
+}
+
+.hero-tagline, .hero-sub { animation: subtitleFade 900ms ease both; }
+@keyframes subtitleFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+@keyframes slowDrift { from { transform: translateX(-2%); } to { transform: translateX(2%); } }
+
+/* Keep the original slideUp for other uses */
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bgPulse {
-  0%   { opacity: 1; transform: scale(1); }
-  50%  { opacity: 0.7; transform: scale(1.05); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-@keyframes gridShift {
-  0%   { background-position: 0 0; }
-  100% { background-position: 60px 60px; }
 }

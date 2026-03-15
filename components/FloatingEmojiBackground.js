@@ -1,139 +1,59 @@
 "use client";
 
-import { useMemo } from "react";
+// Three size tiers — big anchors, mid accents, small sprinkles.
+// filter: grayscale(1) + very low opacity = clean "outline silhouette" feel.
+// Each element has its own float speed + delay so nothing moves in sync.
 
-// Deterministic PRNG so server & client produce the same particles
-function mkRng(seed) {
-  let s = seed >>> 0;
-  return () => {
-    s = (Math.imul(1664525, s) + 1013904223) >>> 0;
-    return s / 4294967296;
-  };
-}
+const FLOATERS = [
+  // ── Big tier ──────────────────────────────────── (~90–115px, op 0.065)
+  { emoji: "🕵️", x:  5, y: 10, size: 112, op: 0.065, dur: 55, delay:   0, rot: -14 },
+  { emoji: "💎",  x: 84, y:  6, size:  96, op: 0.065, dur: 62, delay: -18, rot:  16 },
+  { emoji: "💰",  x: 77, y: 65, size: 108, op: 0.065, dur: 58, delay: -30, rot:   9 },
+  { emoji: "🗝️", x:  4, y: 70, size:  92, op: 0.065, dur: 67, delay: -22, rot: -19 },
 
-const ACCENT_EMOJIS = ["🕵️", "💎", "🔮", "🎯", "🃏", "🪄", "🏮"];
+  // ── Medium tier ───────────────────────────────── (~48–64px, op 0.05)
+  { emoji: "🎯",  x: 44, y:  3, size: 62, op: 0.05, dur: 48, delay:  -8, rot:   5 },
+  { emoji: "🃏",  x: 23, y: 38, size: 54, op: 0.05, dur: 52, delay: -36, rot: -11 },
+  { emoji: "🎭",  x: 70, y: 32, size: 58, op: 0.05, dur: 45, delay: -12, rot:  10 },
+  { emoji: "🔒",  x: 56, y: 76, size: 60, op: 0.05, dur: 50, delay: -26, rot:  -8 },
+  { emoji: "🪄",  x: 14, y: 56, size: 52, op: 0.05, dur: 44, delay: -42, rot:   7 },
+  { emoji: "🔮",  x: 91, y: 46, size: 56, op: 0.05, dur: 55, delay: -16, rot:  -4 },
+
+  // ── Small tier ────────────────────────────────── (~22–36px, op 0.04)
+  { emoji: "💎",  x: 36, y: 20, size: 34, op: 0.04, dur: 40, delay:  -5, rot:  15 },
+  { emoji: "🎯",  x: 62, y: 16, size: 28, op: 0.04, dur: 43, delay: -28, rot:  -9 },
+  { emoji: "🗝️", x: 31, y: 60, size: 32, op: 0.04, dur: 38, delay: -17, rot:  12 },
+  { emoji: "🃏",  x: 81, y: 84, size: 26, op: 0.04, dur: 46, delay: -33, rot: -14 },
+  { emoji: "🔒",  x: 50, y: 87, size: 24, op: 0.04, dur: 41, delay: -21, rot:   8 },
+  { emoji: "🕵️", x: 18, y: 86, size: 30, op: 0.04, dur: 49, delay: -10, rot:  -6 },
+  { emoji: "🪄",  x: 73, y: 54, size: 28, op: 0.04, dur: 37, delay: -38, rot:  11 },
+  { emoji: "🎭",  x: 42, y: 48, size: 22, op: 0.04, dur: 44, delay: -14, rot:  -7 },
+];
 
 export default function FloatingEmojiBackground() {
-  const particles = useMemo(() => {
-    const rng = mkRng(0xc0ffee);
-    const COUNT = 35;
-    return Array.from({ length: COUNT }, (_, i) => {
-      const isEmoji = i < 6;
-      return {
-        id: i,
-        isEmoji,
-        emoji: isEmoji ? ACCENT_EMOJIS[i % ACCENT_EMOJIS.length] : null,
-        // Shape for geometric particles: 0=circle, 1=diamond, 2=ring, 3=dot
-        shape: Math.floor(rng() * 4),
-        left: (i / COUNT) * 95 + 2 + (rng() - 0.5) * 6,
-        top: rng() * 100,
-        size: isEmoji ? 28 + Math.floor(rng() * 24) : 4 + Math.floor(rng() * 14),
-        duration: 20 + rng() * 35,
-        delay: -(rng() * 45),
-        drift: (rng() - 0.5) * 100,
-        rotS: (rng() - 0.5) * 30,
-        rotE: (rng() - 0.5) * 30,
-        opacity: isEmoji ? 0.06 + rng() * 0.04 : 0.08 + rng() * 0.12,
-        // For geometric particles: which accent color
-        colorIdx: Math.floor(rng() * 5) + 1,
-      };
-    });
-  }, []);
-
   return (
-    <>
-      {/* Animated gradient base layer */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          background: `
-            radial-gradient(ellipse at 20% 50%, var(--bg-glow-1, rgba(255,46,184,0.07)) 0%, transparent 60%),
-            radial-gradient(ellipse at 80% 20%, var(--bg-glow-2, rgba(0,229,255,0.06)) 0%, transparent 50%),
-            radial-gradient(ellipse at 50% 90%, var(--bg-glow-3, rgba(255,204,0,0.05)) 0%, transparent 50%)
-          `,
-          animation: "bgPulse 12s ease-in-out infinite alternate",
-        }}
-      />
-
-      {/* Animated grid overlay */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          backgroundImage: `
-            linear-gradient(var(--grid-color, rgba(26,26,26,0.03)) 1px, transparent 1px),
-            linear-gradient(90deg, var(--grid-color, rgba(26,26,26,0.03)) 1px, transparent 1px)
-          `,
-          backgroundSize: "60px 60px",
-          animation: "gridShift 25s linear infinite",
-          maskImage:
-            "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse at center, black 30%, transparent 75%)",
-        }}
-      />
-
-      {/* Floating particles + accent emojis */}
-      <div
-        className="fixed inset-0 overflow-hidden pointer-events-none z-0"
-        aria-hidden="true"
-        style={{
-          maskImage:
-            "linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%)",
-        }}
-      >
-        {particles.map((p) =>
-          p.isEmoji ? (
-            <span
-              key={p.id}
-              className="absolute select-none leading-none"
-              style={{
-                left: `${p.left}%`,
-                bottom: "-15%",
-                fontSize: `${p.size}px`,
-                opacity: p.opacity,
-                "--drift": `${p.drift}px`,
-                "--rot-s": `${p.rotS}deg`,
-                "--rot-e": `${p.rotE}deg`,
-                animation: `floatUp ${p.duration}s ${p.delay}s linear infinite`,
-                filter: "blur(0.5px)",
-              }}
-            >
-              {p.emoji}
-            </span>
-          ) : (
-            <div
-              key={p.id}
-              className="absolute"
-              style={{
-                left: `${p.left}%`,
-                bottom: "-10%",
-                width: `${p.size}px`,
-                height: `${p.size}px`,
-                opacity: p.opacity,
-                background:
-                  p.shape === 2
-                    ? "transparent"
-                    : `var(--conf-${p.colorIdx})`,
-                border:
-                  p.shape === 2
-                    ? `2px solid var(--conf-${p.colorIdx})`
-                    : "none",
-                borderRadius: p.shape === 0 || p.shape === 2 ? "50%" : "2px",
-                transform: p.shape === 1 ? "rotate(45deg)" : "none",
-                "--drift": `${p.drift}px`,
-                "--rot-s": `${p.rotS}deg`,
-                "--rot-e": `${p.rotE}deg`,
-                animation: `floatUp ${p.duration}s ${p.delay}s linear infinite`,
-                filter: "blur(0.5px)",
-              }}
-            />
-          )
-        )}
-      </div>
-    </>
+    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      {FLOATERS.map((f, i) => (
+        <span
+          key={i}
+          className="absolute select-none leading-none block bg-floater"
+          style={{
+            left: `${f.x}%`,
+            top: `${f.y}%`,
+            fontSize: `${f.size}px`,
+            lineHeight: 1,
+            // per-element base opacity (adjusted by theme via CSS)
+            "--op": f.op,
+            filter: "grayscale(1)",
+            "--rot": `${f.rot}deg`,
+            // two animations: slow upward drift + local bob/sway for bubble effect
+            animation: `bubbleDrift ${f.dur * 3}s linear ${f.delay}s infinite, gentleFloat ${f.dur}s ease-in-out ${f.delay}s infinite`,
+            willChange: "transform",
+          }}
+        >
+          {f.emoji}
+        </span>
+      ))}
+    </div>
   );
 }
