@@ -20,12 +20,14 @@ export default function EmojiPlanner({ mission, emojiLimit, onSubmit }) {
   const [emojis, setEmojis] = useState([]);
   const [showPicker, setShowPicker] = useState(true);
 
+  const isUnlimited = emojiLimit >= 99;
+
   const addEmoji = useCallback(
     (emojiData) => {
-      if (emojis.length >= emojiLimit) return;
+      if (!isUnlimited && emojis.length >= emojiLimit) return;
       setEmojis((prev) => [...prev, emojiData.native]);
     },
-    [emojis.length, emojiLimit]
+    [emojis.length, emojiLimit, isUnlimited]
   );
 
   const removeEmoji = useCallback((index) => {
@@ -38,7 +40,7 @@ export default function EmojiPlanner({ mission, emojiLimit, onSubmit }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (emojis.length > 0 && emojis.length <= emojiLimit) {
+    if (emojis.length > 0 && (isUnlimited || emojis.length <= emojiLimit)) {
       onSubmit(emojis.join(""));
     }
   }
@@ -54,6 +56,18 @@ export default function EmojiPlanner({ mission, emojiLimit, onSubmit }) {
         >
           {mission.sentence}
         </p>
+        {mission.genre && (
+          <span
+            className="inline-block mt-1 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider"
+            style={{
+              background: "var(--bg-surface)",
+              color: "var(--accent-alt)",
+              border: "2px solid var(--border-light)",
+            }}
+          >
+            {mission.genre}
+          </span>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="w-full flex flex-col items-center gap-4">
@@ -101,7 +115,7 @@ export default function EmojiPlanner({ mission, emojiLimit, onSubmit }) {
               <span
                 style={{
                   color:
-                    emojis.length >= emojiLimit
+                    !isUnlimited && emojis.length >= emojiLimit
                       ? "var(--timer-low)"
                       : "var(--accent-gold)",
                   fontWeight: 800,
@@ -109,7 +123,7 @@ export default function EmojiPlanner({ mission, emojiLimit, onSubmit }) {
               >
                 {emojis.length}
               </span>{" "}
-              / {emojiLimit} emojis
+              / {isUnlimited ? "∞" : emojiLimit} emojis
             </p>
             {emojis.length > 0 && (
               <button

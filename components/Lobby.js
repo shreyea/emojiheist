@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const EMOJI_LIMIT_OPTIONS = [4, 6];
+const EMOJI_LIMIT_OPTIONS = [4, 6, 8, 10, 99];
 const ROUND_TIME_OPTIONS = [45, 60];
 const TOTAL_ROUNDS_OPTIONS = [5, 10];
 
@@ -178,7 +178,7 @@ export default function Lobby({ roomId, players, spectators, isHost, settings, o
                         settings.emojiLimit === opt ? "btn-primary" : "btn-secondary"
                       }`}
                     >
-                      {opt}
+                      {opt >= 99 ? "∞" : opt}
                     </button>
                   ))}
                 </div>

@@ -397,6 +397,18 @@ export default function RoomPage() {
           <p className="text-2xl md:text-3xl font-extrabold capitalize" style={{ color: 'var(--text-primary)' }}>
             {r.mission.sentence}
           </p>
+          {r.mission.genre && (
+            <span
+              className="inline-block mt-2 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider"
+              style={{
+                background: "var(--bg-surface)",
+                color: "var(--accent-alt)",
+                border: "2px solid var(--border-light)",
+              }}
+            >
+              {r.mission.genre}
+            </span>
+          )}
         </div>
 
         {room.emojiPlan && <div className="text-5xl">{room.emojiPlan}</div>}

@@ -10,7 +10,7 @@ import SentenceBlanks from "../../components/SentenceBlanks";
 import GuessChat from "../../components/GuessChat";
 import Timer from "../../components/Timer";
 
-const EMOJI_LIMIT = 4;
+const EMOJI_LIMIT = 99;
 const ROUND_DURATION = 45;
 const HINT_TIME = 25;
 const PLAYER_NAMES = ["Ankit", "Neha", "Harsh", "Priya", "Rohan"];
@@ -131,6 +131,18 @@ export default function GamePage() {
         <p className="text-2xl md:text-3xl font-extrabold capitalize" style={{ color: 'var(--text-primary)' }}>
           {mission.sentence}
         </p>
+        {mission.genre && (
+          <span
+            className="inline-block mt-2 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider"
+            style={{
+              background: "var(--bg-surface)",
+              color: "var(--accent-alt)",
+              border: "2px solid var(--border-light)",
+            }}
+          >
+            {mission.genre}
+          </span>
+        )}
       </div>
 
       <div className="text-6xl">{emojiPlan}</div>
